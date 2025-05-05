@@ -41,7 +41,7 @@
             <CardHeader>
                 <CardTitle class="text-center">
                     <div class="flex justify-center text-xl space-x-5 mb-6">
-                        <div class="flx justify-between w-full">
+                        <div class="flex justify-between w-full">
                             <p>Duration:</p>
                             <p>00:00</p>
                         </div>
