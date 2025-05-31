@@ -1,7 +1,13 @@
 <?php
 
+use App\Http\Controllers\StatController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::middleware(['auth', 'verified'])->group(function() {
+    Route::get('/quiz-stats', [StatController::class, 'index'])->name('stats.index');
+    Route::post('/quiz-stats', [StatController::class, 'store'])->name('stats.store');
+});
 
 Route::get('/', function () {
     return Inertia::render('Welcome');

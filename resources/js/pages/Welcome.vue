@@ -1,11 +1,13 @@
 <script setup lang="ts">
-    import { computed, onMounted, ref } from 'vue';
-    import { Head, Link } from '@inertiajs/vue3';
+    import { computed, onMounted, ref, watch } from 'vue';
+    import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
     import Card from '@/components/ui/card/Card.vue'
     import CardHeader from '@/components/ui/card/CardHeader.vue';
     import CardTitle from '@/components/ui/card/CardTitle.vue';
     import CardContent from '@/components/ui/card/CardContent.vue';
     import Button from '@/components/ui/button/Button.vue';
+
+    const page = usePage()
 
     const questions = ref([])
     const currentQuestionIndex = ref(0)
@@ -16,6 +18,13 @@
 
     onMounted(() => {
         getQuestions()
+    })
+
+    const form = useForm({
+        id: '',
+        score: 0,
+        startTime: '',
+        endTime: '',
     })
 
     const currentQuestion = computed(() => {
@@ -37,6 +46,10 @@
 
     const hasCompleted = computed(() => {
         return completed.value = true ? remainingCount.value <= 0 : remainingCount.value >= 0
+    });
+
+    const user = computed(() => {
+        return page.props.auth.user
     });
 
     const getQuestions = async () => {
@@ -63,6 +76,25 @@
         incorrectScore.value = 0
         currentQuestionIndex.value = 0
         getQuestions()
+    };
+
+    watch(currentQuestionIndex, (newIndex) => {
+        if (newIndex === 10) {
+            if (!user.value) {
+               stop()
+            } else {
+               submit()
+            }
+        }
+    });
+
+    const stop = () => {
+        form.score = correctScore.value
+    };
+
+    const submit = () => {
+        stop()
+        form.post(route('stats.store'))
     };
 </script>
 
