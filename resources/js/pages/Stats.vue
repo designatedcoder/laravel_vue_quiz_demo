@@ -35,10 +35,7 @@ defineProps({
                                 Score
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Average Score
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Highest Score
+                                Duration
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Date Played
@@ -55,13 +52,11 @@ defineProps({
                                 {{ item.id }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ item.score }}
+                                {{ item.score }} %
                             </td>
                             <td class="px-6 py-4">
-                                45.5
-                            </td>
-                            <td class="px-6 py-4">
-                                90
+                                {{ item.calculated_duration['i'] }} mins
+                                {{ item.calculated_duration['s'] }} secs
                             </td>
                             <td class="px-6 py-4">
                                 {{ item.created_at }}

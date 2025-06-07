@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Stat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -31,8 +32,8 @@ class StatController extends Controller
     public function store(Request $request) {
         auth()->user()->stats()->create([
             'score' => $request->score * 10,
-            'start_time' => now(),
-            'end_time' => now(),
+            'start_time' => Carbon::parse($request->startTime),
+            'end_time' =>  Carbon::parse($request->endTime),
         ]);
     }
 

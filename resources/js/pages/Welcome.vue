@@ -16,6 +16,12 @@
     const incorrectScore = ref(0)
     const completed = ref(false)
 
+    const startTime = ref(0)
+    const secs = ref(0)
+    const seconds = ref('00')
+    const minutes = ref('00')
+    const timeInterval = ref(0)
+
     onMounted(() => {
         getQuestions()
     })
@@ -75,10 +81,16 @@
         correctScore.value = 0
         incorrectScore.value = 0
         currentQuestionIndex.value = 0
+        startTime.value = 0
+        seconds.value = '00'
+        minutes.value = '00'
         getQuestions()
     };
 
     watch(currentQuestionIndex, (newIndex) => {
+        if (newIndex === 1) {
+           start()
+        }
         if (newIndex === 10) {
             if (!user.value) {
                stop()
@@ -88,7 +100,20 @@
         }
     });
 
+    const start = () => {
+        form.startTime = new Date()
+        startTime.value = Date.now()
+        timeInterval.value = setInterval(() => {
+            secs.value = Math.floor((Date.now() - startTime.value) / 1000)
+
+            seconds.value = `${parseInt(`${secs.value % 60}`, 10)}`.padStart(2, '0')
+            minutes.value = `${parseInt(`${secs.value / 60} % 60`, 10)}`.padStart(2, '0')
+        }, 1000)
+    };
+
     const stop = () => {
+        clearInterval(timeInterval.value)
+        form.endTime= new Date()
         form.score = correctScore.value
     };
 
@@ -136,9 +161,9 @@
             <CardHeader>
                 <CardTitle class="text-center">
                     <div class="flex justify-center text-xl space-x-5 mb-6">
-                        <div class="flex justify-between w-full">
+                        <div class="flex justify-center text-xl space-x-5 mb-6">
                             <p>Duration:</p>
-                            <p>00:00</p>
+                            <p>{{ minutes }}:{{ seconds }}</p>
                         </div>
                     </div>
                     <div class="flex flex-col items-center text-xl space-y-5 lg:flex-row lg:justify-center lg:space-y-0 lg:space-x-10">
@@ -195,6 +220,9 @@
                 <CardTitle class="text-center text-xl">
                     <p>Congrats, here is your final score!</p>
                     <p>{{ finalScore }}%</p>
+                    <p class="mt-6">
+                        You finished in {{ minutes }}:{{ seconds }}
+                    </p>
                 </CardTitle>
             </CardHeader>
             <CardContent class="text-center">
@@ -204,6 +232,14 @@
                 >
                         Play Again!
                 </Button>
+                <p class="text-xl mt-6" v-if="user">
+                    Go see your stats on the Dashboard!
+                </p>
+                <p class="text-xl mt-6" v-else>
+                   Stats are not saved unless you are
+                    <Link :href="route('login')" class="hover:text-blue-400">Logged </Link>
+                    in!
+                </p>
             </CardContent>
         </Card>
     </div>
